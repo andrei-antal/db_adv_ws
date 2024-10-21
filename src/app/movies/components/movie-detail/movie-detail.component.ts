@@ -5,15 +5,24 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { iif, map, switchMap, tap } from 'rxjs';
 import { Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
+import { MovieItemComponent } from '../movie-item/movie-item.component';
 
 @Component({
   selector: 'ngm-movie-detail',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    MovieItemComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './movie-detail.component.html',
   styleUrls: ['./movie-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

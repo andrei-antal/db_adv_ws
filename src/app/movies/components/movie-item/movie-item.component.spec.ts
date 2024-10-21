@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MovieItemComponent } from './movie-item.component';
 import { EMPTY_MOVIE } from '../../model/movie';
-import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
+import { provideRouter } from '@angular/router';
 
 describe('MovieItemComponent', () => {
   let component: MovieItemComponent;
@@ -11,8 +11,8 @@ describe('MovieItemComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MovieItemComponent],
-      imports: [RouterTestingModule, FormsModule],
+      imports: [MovieItemComponent, FormsModule],
+      providers: [provideRouter([])],
     });
     fixture = TestBed.createComponent(MovieItemComponent);
     component = fixture.componentInstance;

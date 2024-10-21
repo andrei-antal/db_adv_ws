@@ -1,11 +1,23 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { CommentUpdate } from '../movie-item/movie-item.component';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  CommentUpdate,
+  MovieItemComponent,
+} from '../movie-item/movie-item.component';
 import { MovieService } from '../../services/movie.service';
 import { debounceTime, startWith, switchMap } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'ngm-movie-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MovieItemComponent,
+    RouterModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
