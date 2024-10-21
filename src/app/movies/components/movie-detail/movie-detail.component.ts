@@ -11,18 +11,12 @@ import { iif, map, switchMap, tap } from 'rxjs';
 import { Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
 
 @Component({
   selector: 'ngm-movie-detail',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    MovieItemComponent,
-    ReactiveFormsModule,
-  ],
+  imports: [RouterModule, MovieItemComponent, ReactiveFormsModule],
   templateUrl: './movie-detail.component.html',
   styleUrls: ['./movie-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -32,10 +32,6 @@ export class MovieListComponent {
     switchMap((searchTerm) => this.#movieService.getMovies(searchTerm || ''))
   );
 
-  trackByFn(_: any, movie: any): number {
-    return movie.id;
-  }
-
   handleCommentUpdate(commentPayload: CommentUpdate): void {
     this.#movieService
       .updateComment(commentPayload.id, commentPayload.newComment)

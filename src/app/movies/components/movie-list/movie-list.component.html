@@ -2,23 +2,20 @@
 <div class="py-4 mb-4 d-flex justify-content-center">
   <input placeholder="Search movies" [formControl]="searchField" class="p-2" />
 </div>
-<ng-container *ngIf="movies$ | async as movies">
-  <div
-    *ngIf="movies.length; else empty"
-    class="row row-cols-1 row-cols-md-2 justify-content-center"
-    style="row-gap: 1rem"
-  >
-    <ngm-movie-item
-      *ngFor="let movie of movies; trackBy: trackByFn"
-      (commentUpdate)="handleCommentUpdate($event)"
-      (movieDelete)="handleMovieDelete($event)"
-      [movie]="movie"
-    ></ngm-movie-item>
+<div
+  class="row row-cols-1 row-cols-md-2 justify-content-center"
+  style="row-gap: 1rem"
+>
+  @for (movie of movies$ | async; track movie.id) {
+  <ngm-movie-item
+    (commentUpdate)="handleCommentUpdate($event)"
+    (movieDelete)="handleMovieDelete($event)"
+    [movie]="movie"
+  />
+  } @empty {
+  <div class="d-flex justify-content-center align-items-center gap-3 fs-5">
+    <i class="far fa-window-close"></i>
+    No movies found
   </div>
-  <ng-template #empty>
-    <div class="d-flex justify-content-center align-items-center gap-3 fs-5">
-      <i class="far fa-window-close"></i>
-      No movies found
-    </div>
-  </ng-template>
-</ng-container>
+  }
+</div>
