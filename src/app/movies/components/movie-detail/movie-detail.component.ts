@@ -13,11 +13,17 @@ import { iif, tap } from 'rxjs';
 import { EMPTY_MOVIE, Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
+import { MovieImageFallbackDirective } from '../../../directives/movie-image-fallback/movie-image-fallback.directive';
 
 @Component({
   selector: 'ngm-movie-detail',
   standalone: true,
-  imports: [RouterModule, MovieItemComponent, ReactiveFormsModule],
+  imports: [
+    RouterModule,
+    MovieItemComponent,
+    ReactiveFormsModule,
+    MovieImageFallbackDirective,
+  ],
   templateUrl: './movie-detail.component.html',
   styleUrls: ['./movie-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
