@@ -17,6 +17,7 @@ import { MovieImageFallbackDirective } from '../../../directives/movie-image-fal
 import {
   genreAsyncValidator,
   genreValidator,
+  sciFiGenreYearValidator,
 } from '../../services/movies.validators';
 
 @Component({
@@ -55,27 +56,30 @@ export class MovieDetailComponent {
     });
   }
 
-  movieForm = this.#fb.group({
-    title: this.#fb.control('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    genre: this.#fb.control('', {
-      nonNullable: true,
-      updateOn: 'blur',
-      validators: Validators.required,
-      asyncValidators: genreAsyncValidator(this.#movieService.getGenres()),
-    }),
-    year: this.#fb.control('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    plot: this.#fb.control('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    poster: this.#fb.control('', { nonNullable: true }),
-  });
+  movieForm = this.#fb.group(
+    {
+      title: this.#fb.control('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      genre: this.#fb.control('', {
+        nonNullable: true,
+        updateOn: 'blur',
+        validators: Validators.required,
+        asyncValidators: genreAsyncValidator(this.#movieService.getGenres()),
+      }),
+      year: this.#fb.control('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      plot: this.#fb.control('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      poster: this.#fb.control('', { nonNullable: true }),
+    },
+    { validators: sciFiGenreYearValidator, updateOn: 'blur' }
+  );
 
   onSubmit(): void {
     const { value } = this.movieForm;

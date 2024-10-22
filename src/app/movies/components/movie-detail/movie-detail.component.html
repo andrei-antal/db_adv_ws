@@ -84,6 +84,11 @@
             >Cancel</a
           >
         </div>
+        @if (movieForm.errors?.['wrongSciFiYear'] && movieForm.dirty) {
+        <div class="invalid-feedback">
+          Sci-Fi movies were introduced after 1902
+        </div>
+        }
       </form>
       <div class="col-3">
         <img
