@@ -29,6 +29,9 @@
           @if (movieForm.controls.genre.errors?.['required'] &&
           movieForm.controls.genre.dirty) {
           <div class="invalid-feedback">Genre required</div>
+          } @else if (movieForm.controls.genre.errors?.['wrongGenre'] &&
+          movieForm.controls.genre.dirty) {
+          <div class="invalid-feedback">Not a genre category</div>
           }
         </div>
         <div class="form-group">

@@ -14,6 +14,7 @@ import { EMPTY_MOVIE, Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
 import { MovieImageFallbackDirective } from '../../../directives/movie-image-fallback/movie-image-fallback.directive';
+import { genreValidator } from '../../services/movies.validators';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -58,7 +59,7 @@ export class MovieDetailComponent {
     }),
     genre: this.#fb.control('', {
       nonNullable: true,
-      validators: Validators.required,
+      validators: [Validators.required, genreValidator],
     }),
     year: this.#fb.control('', {
       nonNullable: true,
