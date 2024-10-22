@@ -1,6 +1,10 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
-import { Route, provideRouter } from '@angular/router';
+import {
+  Route,
+  provideRouter,
+  withComponentInputBinding,
+} from '@angular/router';
 import { HomeComponent } from './home/home.component';
 
 const routes: Route[] = [
@@ -13,5 +17,8 @@ const routes: Route[] = [
 ];
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideHttpClient(), provideRouter(routes)],
+  providers: [
+    provideHttpClient(),
+    provideRouter(routes, withComponentInputBinding()),
+  ],
 };

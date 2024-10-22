@@ -8,6 +8,7 @@ import { MovieService } from '../../services/movie.service';
 import { debounceTime, startWith, switchMap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'ngm-movie-list',
@@ -26,10 +27,12 @@ export class MovieListComponent {
   readonly #movieService = inject(MovieService);
 
   searchField = new FormControl('');
-  movies$ = this.searchField.valueChanges.pipe(
-    startWith(''),
-    debounceTime(300),
-    switchMap((searchTerm) => this.#movieService.getMovies(searchTerm || ''))
+  movies$ = toSignal(
+    this.searchField.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      switchMap((searchTerm) => this.#movieService.getMovies(searchTerm || ''))
+    )
   );
 
   handleCommentUpdate(commentPayload: CommentUpdate): void {

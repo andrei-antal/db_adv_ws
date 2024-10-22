@@ -1,16 +1,17 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
+  computed,
+  effect,
   inject,
-  OnInit,
+  input,
+  signal,
 } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { iif, map, switchMap, tap } from 'rxjs';
-import { Movie } from '../../model/movie';
+import { iif, tap } from 'rxjs';
+import { EMPTY_MOVIE, Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
 
 @Component({
@@ -21,15 +22,28 @@ import { MovieItemComponent } from '../movie-item/movie-item.component';
   styleUrls: ['./movie-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MovieDetailComponent implements OnInit {
-  readonly #destroyRef = inject(DestroyRef);
+export class MovieDetailComponent {
   readonly #fb = inject(FormBuilder);
-  readonly #route = inject(ActivatedRoute);
   readonly #router = inject(Router);
   readonly #movieService = inject(MovieService);
 
-  #isNewMovie!: boolean;
-  #movie!: Movie;
+  id = input<string>('');
+
+  #movie = signal<Movie>(EMPTY_MOVIE);
+  #isNewMovie = computed(() => !this.id());
+
+  constructor() {
+    effect((onCleanup) => {
+      const id = this.id();
+      if (id) {
+        const sub = this.#movieService.getMovie(id).subscribe((movie) => {
+          this.movieForm.patchValue(movie);
+          this.#movie.set(movie);
+        });
+        onCleanup(() => sub.unsubscribe());
+      }
+    });
+  }
 
   movieForm = this.#fb.group({
     title: this.#fb.control('', {
@@ -51,30 +65,14 @@ export class MovieDetailComponent implements OnInit {
     poster: this.#fb.control('', { nonNullable: true }),
   });
 
-  ngOnInit(): void {
-    this.#route.paramMap
-      .pipe(
-        map((paramsMap) => paramsMap.get('id') as string),
-        tap((movieId) => (this.#isNewMovie = !movieId)),
-        switchMap((movieId) =>
-          this.#movieService
-            .getMovie(movieId)
-            .pipe(tap((movie) => (this.#movie = movie)))
-        ),
-        takeUntilDestroyed(this.#destroyRef)
-      )
-      .subscribe((movie) => this.movieForm.patchValue(movie));
-  }
-
   onSubmit(): void {
     const { value } = this.movieForm;
     const modifiedMovie: Movie = {
-      ...this.#movie,
+      ...this.#movie(),
       ...value,
     };
-
     iif(
-      () => this.#isNewMovie,
+      () => this.#isNewMovie(),
       this.#movieService
         .createMovie(modifiedMovie)
         .pipe(tap(() => 'Movie created')),

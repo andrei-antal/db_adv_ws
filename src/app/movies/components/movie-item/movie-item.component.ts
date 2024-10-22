@@ -1,13 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
+  computed,
+  effect,
+  input,
+  output,
+  signal,
 } from '@angular/core';
-import { Movie } from '../../model/movie';
+import { EMPTY_MOVIE, Movie } from '../../model/movie';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -24,21 +24,20 @@ export interface CommentUpdate {
   styleUrls: ['./movie-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MovieItemComponent implements OnChanges {
-  @Input() movie!: Movie;
-  @Input() editable = true;
-  @Output() commentUpdate = new EventEmitter<CommentUpdate>();
-  @Output() movieDelete = new EventEmitter<string>();
+export class MovieItemComponent {
+  movie = input.required<Movie>();
+  editable = input(true);
 
-  commentSaved = false;
-  movieComment = '';
+  commentUpdate = output<CommentUpdate>();
+  movieDelete = output<string>();
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['movie']) {
-      this.movieComment = changes['movie'].currentValue.comment;
-      this.commentSaved = this.movieComment.length > 0;
-    }
-  }
+  state = computed(() => {
+    const movie = this.movie();
+    return {
+      movieComment: signal(movie.comment),
+      commentSaved: signal(movie.comment.length > 0),
+    };
+  });
 
   wordCount(comment: string): number {
     if (!comment || comment.length === 0) {
@@ -49,19 +48,19 @@ export class MovieItemComponent implements OnChanges {
   }
 
   saveComment(): void {
-    if (!this.commentSaved) {
+    if (!this.state().commentSaved()) {
       this.commentUpdate.emit({
-        id: this.movie.id,
-        newComment: this.movieComment,
+        id: this.movie()?.id || '',
+        newComment: this.state().movieComment(),
       });
     } else {
-      this.commentSaved = false;
+      this.state().commentSaved.set(false);
     }
   }
 
   clearComment(): void {
     this.commentUpdate.emit({
-      id: this.movie.id,
+      id: this.movie().id,
       newComment: '',
     });
   }
