@@ -17,6 +17,7 @@ import { environment } from '../../../environments/environment';
 export class MovieService {
   readonly #http = inject(HttpClient);
   readonly #movieApi = `${environment.apiUrl}/movies`;
+  readonly #genreApi = `${environment.apiUrl}/genres`;
   readonly #reload = new BehaviorSubject<void>(undefined);
 
   getMovies(searchTerm = ''): Observable<Movie[]> {
@@ -54,5 +55,9 @@ export class MovieService {
 
   updateMovie(movie: Movie): Observable<any> {
     return this.#http.put(`${this.#movieApi}/${movie.id}`, movie);
+  }
+
+  getGenres(): Observable<string[]> {
+    return this.#http.get<string[]>(this.#genreApi);
   }
 }
