@@ -1,0 +1,11 @@
+@for (genre of genres() | keyvalue; track $index) {
+<span
+  class="badge bg-primary me-2"
+  [class.bg-primary]="genre.value"
+  [class.bg-light]="!genre.value"
+  [class.text-dark]="!genre.value"
+  (click)="toggleGenre(genre.key)"
+>
+  {{ genre.key }}
+</span>
+}

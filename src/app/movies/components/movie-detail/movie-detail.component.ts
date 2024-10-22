@@ -24,6 +24,7 @@ import {
   sciFiGenreYearValidator,
 } from '../../services/movies.validators';
 import { GENRES } from '../../model/movie-data';
+import { GenreControlComponent } from '../genre-control/genre-control.component';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -33,6 +34,7 @@ import { GENRES } from '../../model/movie-data';
     MovieItemComponent,
     ReactiveFormsModule,
     MovieImageFallbackDirective,
+    GenreControlComponent,
   ],
   templateUrl: './movie-detail.component.html',
   styleUrls: ['./movie-detail.component.scss'],
@@ -54,11 +56,7 @@ export class MovieDetailComponent {
       const id = this.id();
       if (id) {
         const sub = this.#movieService.getMovie(id).subscribe((movie) => {
-          const genre = movie.genre
-            .split(',')
-            .map((g) => g.trim().toLowerCase());
-          genre.forEach(() => this.addGenre());
-          this.movieForm.patchValue({ ...movie, genre });
+          this.movieForm.patchValue(movie);
           this.#movie.set(movie);
         });
         onCleanup(() => sub.unsubscribe());
@@ -72,8 +70,9 @@ export class MovieDetailComponent {
         nonNullable: true,
         validators: Validators.required,
       }),
-      genre: this.#fb.nonNullable.array([] as string[], {
-        validators: genreValidator,
+      genre: this.#fb.control('', {
+        nonNullable: true,
+        validators: Validators.required,
         updateOn: 'change',
       }),
       year: this.#fb.control('', {
@@ -89,16 +88,11 @@ export class MovieDetailComponent {
     { validators: sciFiGenreYearValidator, updateOn: 'blur' }
   );
 
-  get genreArray(): FormArray {
-    return this.movieForm.get('genre') as FormArray;
-  }
-
   onSubmit(): void {
     const { value } = this.movieForm;
     const modifiedMovie: Movie = {
       ...this.#movie(),
       ...value,
-      genre: value.genre!.filter((g: string) => g).join(', '),
     };
     iif(
       () => this.#isNewMovie(),
@@ -113,13 +107,5 @@ export class MovieDetailComponent {
 
   goBack() {
     this.#router.navigate(['/movies']);
-  }
-
-  addGenre(): void {
-    this.genreArray.push(this.#fb.nonNullable.control(''));
-  }
-
-  removeGenre(index: number): void {
-    this.genreArray.removeAt(index);
   }
 }
