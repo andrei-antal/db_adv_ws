@@ -28,7 +28,7 @@
           state().movieComment().trim().length === 0 ? 'darkred' : 'darkgreen'
         "
       >
-        {{ wordCount(state().movieComment()) }} words
+        {{ state().movieComment()  | wordCount }}
       </small>
     </div>
     } @else {
