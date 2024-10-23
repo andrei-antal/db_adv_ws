@@ -42,7 +42,7 @@ export class MovieService {
     } else if (!this.#cache) {
       this.#cache = merge(this.#reload, interval(refreshInterval)).pipe(
         switchMap(() => getMoviesApi),
-        shareReplay(1),
+        shareReplay({ bufferSize: 1, refCount: true }),
         takeUntil(this.#clearCache)
       );
     }

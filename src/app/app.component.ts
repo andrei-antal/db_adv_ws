@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MovieListComponent } from './movies/components/movie-list/movie-list.component';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'ngm-root',
@@ -12,5 +12,13 @@ import { MovieListComponent } from './movies/components/movie-list/movie-list.co
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
+  authService = inject(AuthService);
+  #router = inject(Router);
+
   title = 'ngMovies';
+
+  logout() {
+    this.authService.logout();
+    this.#router.navigate(['/']);
+  }
 }
