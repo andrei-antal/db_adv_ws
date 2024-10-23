@@ -14,7 +14,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { iif, tap } from 'rxjs';
+import { iif, Observable, of, tap } from 'rxjs';
 import { EMPTY_MOVIE, Movie } from '../../model/movie';
 import { MovieService } from '../../services/movie.service';
 import { MovieItemComponent } from '../movie-item/movie-item.component';
@@ -50,6 +50,7 @@ export class MovieDetailComponent {
 
   #movie = signal<Movie>(EMPTY_MOVIE);
   #isNewMovie = computed(() => !this.id());
+  #changesSaved = false;
 
   constructor() {
     effect((onCleanup) => {
@@ -102,10 +103,22 @@ export class MovieDetailComponent {
       this.#movieService
         .updateMovie(modifiedMovie)
         .pipe(tap(() => 'Movie updated'))
-    ).subscribe(() => this.goBack());
+    ).subscribe(() => {
+      this.#changesSaved = true;
+      this.goBack();
+    });
   }
 
   goBack() {
     this.#router.navigate(['/movies']);
+  }
+
+  confirmCancel(): Observable<boolean> {
+    if (!this.#changesSaved && this.movieForm.dirty) {
+      return of(
+        window.confirm('You have unsaved changes. Do you really want to leave?')
+      );
+    }
+    return of(true);
   }
 }

@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { Role } from '../services/auth.service';
+import { MovieDetailComponent } from './components/movie-detail/movie-detail.component';
 import { hasRoleGuard } from '../guards/has-role.guard';
 
 export const movieRoutes: Route[] = [
@@ -20,6 +21,9 @@ export const movieRoutes: Route[] = [
       roles: [Role.Admin],
     },
     canActivate: [hasRoleGuard],
+    canDeactivate: [
+      (component: MovieDetailComponent) => component.confirmCancel(),
+    ],
   },
   {
     path: ':id',
@@ -31,5 +35,8 @@ export const movieRoutes: Route[] = [
       roles: [Role.Admin],
     },
     canActivate: [hasRoleGuard],
+    canDeactivate: [
+      (component: MovieDetailComponent) => component.confirmCancel(),
+    ],
   },
 ];

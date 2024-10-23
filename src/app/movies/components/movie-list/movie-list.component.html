@@ -8,7 +8,7 @@
   class="row row-cols-1 row-cols-md-2 justify-content-center"
   style="row-gap: 1rem"
 >
-  @for (movie of tmdbMovies$(); track movie.id) {
+  @for (movie of movies$(); track movie.id) {
   <ngm-movie-item
     (commentUpdate)="handleCommentUpdate($event)"
     (movieDelete)="handleMovieDelete($event)"
