@@ -21,6 +21,7 @@ import { RouterModule } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TmdbService } from '../../services/tmdb.service';
 import { Movie } from '../../model/movie';
+import { HasRoleDirective } from '../../../directives/has-role/has-role.directive';
 
 @Component({
   selector: 'ngm-movie-list',
@@ -30,6 +31,7 @@ import { Movie } from '../../model/movie';
     MovieItemComponent,
     RouterModule,
     ReactiveFormsModule,
+    HasRoleDirective,
   ],
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss'],
