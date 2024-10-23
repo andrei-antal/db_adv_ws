@@ -1,5 +1,5 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   Route,
   provideRouter,
@@ -7,6 +7,7 @@ import {
 } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { isAuthenticatedGuard } from './guards/is-authenticated.guard';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 const routes: Route[] = [
   { path: '', component: HomeComponent },
@@ -20,7 +21,7 @@ const routes: Route[] = [
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideRouter(routes, withComponentInputBinding()),
   ],
 };
