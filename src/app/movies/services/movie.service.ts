@@ -60,4 +60,10 @@ export class MovieService {
   getGenres(): Observable<string[]> {
     return this.#http.get<string[]>(this.#genreApi);
   }
+
+  updateRating(movieId: string, newRating: number): Observable<Movie> {
+    return this.#http
+      .patch<Movie>(`${this.#movieApi}/${movieId}`, { rating: newRating })
+      .pipe(tap(() => this.#reload.next()));
+  }
 }

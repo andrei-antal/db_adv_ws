@@ -12,10 +12,16 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WordCountPipe } from '../../../pipes/word-count.pipe';
 import { MovieImageFallbackDirective } from '../../../directives/movie-image-fallback/movie-image-fallback.directive';
+import { RatingControlComponent } from '../rating-control/rating-control.component';
 
 export interface CommentUpdate {
   id: string;
   newComment: string;
+}
+
+export interface RatingUpdate {
+  id: string;
+  newRating: number;
 }
 
 @Component({
@@ -26,6 +32,7 @@ export interface CommentUpdate {
     RouterModule,
     WordCountPipe,
     MovieImageFallbackDirective,
+    RatingControlComponent,
   ],
   templateUrl: './movie-item.component.html',
   styleUrls: ['./movie-item.component.scss'],
@@ -37,6 +44,7 @@ export class MovieItemComponent {
 
   commentUpdate = output<CommentUpdate>();
   movieDelete = output<string>();
+  rateMovie = output<RatingUpdate>();
 
   state = computed(() => {
     const movie = this.movie();
@@ -45,7 +53,6 @@ export class MovieItemComponent {
       commentSaved: signal(movie.comment.length > 0),
     };
   });
-
   saveComment(): void {
     if (!this.state().commentSaved()) {
       this.commentUpdate.emit({

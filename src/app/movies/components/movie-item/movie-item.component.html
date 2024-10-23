@@ -38,6 +38,13 @@
       <p>{{ state().movieComment() }}</p>
     </div>
     }
+    <div class="mt-2">
+      <p class="fw-bold">Rating:</p>
+      <ngm-rating-control
+        [rating]="movie().rating"
+        (ratingChange)="rateMovie.emit({ id: movie().id, newRating: $event })"
+      />
+    </div>
     <hr />
     <button
       (click)="saveComment()"

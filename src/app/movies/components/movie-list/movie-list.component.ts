@@ -3,6 +3,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CommentUpdate,
   MovieItemComponent,
+  RatingUpdate,
 } from '../movie-item/movie-item.component';
 import { MovieService } from '../../services/movie.service';
 import { debounceTime, startWith, switchMap } from 'rxjs';
@@ -43,5 +44,11 @@ export class MovieListComponent {
 
   handleMovieDelete(movieId: string): void {
     this.#movieService.deleteMovie(movieId).subscribe();
+  }
+
+  handleRateMovie(ratingPayload: RatingUpdate): void {
+    this.#movieService
+      .updateRating(ratingPayload.id, ratingPayload.newRating)
+      .subscribe();
   }
 }
