@@ -22,6 +22,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TmdbService } from '../../services/tmdb.service';
 import { Movie } from '../../model/movie';
 import { HasRoleDirective } from '../../../directives/has-role/has-role.directive';
+import { Store } from '@ngrx/store';
+import { getAllMovies, MovieState } from '../../store/movies.reducers';
 
 @Component({
   selector: 'ngm-movie-list',
@@ -40,6 +42,7 @@ import { HasRoleDirective } from '../../../directives/has-role/has-role.directiv
 export class MovieListComponent {
   readonly #movieService = inject(MovieService);
   readonly #tmdbService = inject(TmdbService);
+  readonly store = inject(Store<MovieState>);
 
   pageByScroll$ = fromEvent(window, 'scroll').pipe(
     map(() => window.scrollY),
@@ -57,7 +60,7 @@ export class MovieListComponent {
     this.searchField.valueChanges.pipe(
       startWith(''),
       debounceTime(300),
-      switchMap((searchTerm) => this.#movieService.getMovies(searchTerm || ''))
+      switchMap(() => this.store.select(getAllMovies))
     )
   );
 
