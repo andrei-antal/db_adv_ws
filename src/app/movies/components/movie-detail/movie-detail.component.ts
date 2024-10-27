@@ -25,6 +25,9 @@ import {
 } from '../../services/movies.validators';
 import { GENRES } from '../../model/movie-data';
 import { GenreControlComponent } from '../genre-control/genre-control.component';
+import { MovieState } from '../../store/movies.reducers';
+import { Store } from '@ngrx/store';
+import { addMovie } from '../../store/movies.actions';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -45,6 +48,7 @@ export class MovieDetailComponent {
   readonly #router = inject(Router);
   readonly #movieService = inject(MovieService);
   readonly genres = GENRES;
+  readonly store = inject(Store<MovieState>);
 
   id = input<string>('');
 
@@ -95,18 +99,12 @@ export class MovieDetailComponent {
       ...this.#movie(),
       ...value,
     };
-    iif(
-      () => this.#isNewMovie(),
-      this.#movieService
-        .createMovie(modifiedMovie)
-        .pipe(tap(() => 'Movie created')),
-      this.#movieService
-        .updateMovie(modifiedMovie)
-        .pipe(tap(() => 'Movie updated'))
-    ).subscribe(() => {
-      this.#changesSaved = true;
-      this.goBack();
-    });
+    if (this.#isNewMovie()) {
+      this.store.dispatch(addMovie(modifiedMovie));
+    }
+
+    this.#changesSaved = true;
+    this.goBack();
   }
 
   goBack() {
