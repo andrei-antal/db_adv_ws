@@ -1,4 +1,10 @@
-import { createReducer, Action, on } from '@ngrx/store';
+import {
+  createReducer,
+  Action,
+  on,
+  createFeatureSelector,
+  createSelector,
+} from '@ngrx/store';
 
 import { Movie } from '../model/movie';
 
@@ -41,3 +47,13 @@ export function moviesListReducer(
 ) {
   return moviesReducer(state, action);
 }
+
+export const getMovies = (state: MovieState): Movie[] => state.movies;
+
+const getMoviesFeatureState =
+  createFeatureSelector<MovieState>('moviesFeature');
+
+export const getAllMovies = createSelector<MovieState, MovieState, Movie[]>(
+  getMoviesFeatureState,
+  getMovies
+);
