@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   Route,
@@ -10,6 +10,7 @@ import { isAuthenticatedGuard } from './guards/is-authenticated.guard';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { provideStore } from '@ngrx/store';
 import { moviesListReducer } from './movies/store/movies.reducers';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 const routes: Route[] = [
   { path: '', component: HomeComponent },
@@ -26,5 +27,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideRouter(routes, withComponentInputBinding()),
     provideStore({ moviesFeature: moviesListReducer }),
-  ],
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
+],
 };
