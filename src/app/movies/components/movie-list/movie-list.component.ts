@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CommentUpdate,
@@ -24,6 +29,7 @@ import { Movie } from '../../model/movie';
 import { HasRoleDirective } from '../../../directives/has-role/has-role.directive';
 import { Store } from '@ngrx/store';
 import { getAllMovies, MovieState } from '../../store/movies.reducers';
+import { loadMovies } from '../../store/movies.actions';
 
 @Component({
   selector: 'ngm-movie-list',
@@ -39,7 +45,7 @@ import { getAllMovies, MovieState } from '../../store/movies.reducers';
   styleUrls: ['./movie-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MovieListComponent {
+export class MovieListComponent implements OnInit {
   readonly #movieService = inject(MovieService);
   readonly #tmdbService = inject(TmdbService);
   readonly store = inject(Store<MovieState>);
@@ -73,6 +79,10 @@ export class MovieListComponent {
       )
     )
   );
+
+  ngOnInit(): void {
+    this.store.dispatch(loadMovies());
+  }
 
   handleCommentUpdate(commentPayload: CommentUpdate): void {
     this.#movieService

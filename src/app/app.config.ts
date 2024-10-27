@@ -11,6 +11,8 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 import { provideStore } from '@ngrx/store';
 import { moviesListReducer } from './movies/store/movies.reducers';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideEffects } from '@ngrx/effects';
+import * as MoviesEffects from './movies/store/movies.effects';
 
 const routes: Route[] = [
   { path: '', component: HomeComponent },
@@ -27,6 +29,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideRouter(routes, withComponentInputBinding()),
     provideStore({ moviesFeature: moviesListReducer }),
-    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
-],
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
+    provideEffects(MoviesEffects),
+  ],
 };
