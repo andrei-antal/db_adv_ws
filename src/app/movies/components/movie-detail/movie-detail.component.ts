@@ -25,9 +25,9 @@ import {
 } from '../../services/movies.validators';
 import { GENRES } from '../../model/movie-data';
 import { GenreControlComponent } from '../genre-control/genre-control.component';
-import { MovieState } from '../../store/movies.reducers';
-import { Store } from '@ngrx/store';
-import { addMovie } from '../../store/movies.actions';
+import { getMovieById, MovieState } from '../../store/movies.reducers';
+import { select, Store } from '@ngrx/store';
+import { addMovie, updateMovie } from '../../store/movies.actions';
 
 @Component({
   selector: 'ngm-movie-detail',
@@ -57,16 +57,23 @@ export class MovieDetailComponent {
   #changesSaved = false;
 
   constructor() {
-    effect((onCleanup) => {
-      const id = this.id();
-      if (id) {
-        const sub = this.#movieService.getMovie(id).subscribe((movie) => {
-          this.movieForm.patchValue(movie);
-          this.#movie.set(movie);
-        });
-        onCleanup(() => sub.unsubscribe());
-      }
-    });
+    effect(
+      (onCleanup) => {
+        const id = this.id();
+        if (id) {
+          const sub = this.store
+            .pipe(select(getMovieById({ movieId: id })))
+            .subscribe((movie) => {
+              if (movie) {
+                this.movieForm.patchValue(movie);
+                this.#movie.set(movie);
+              }
+            });
+          onCleanup(() => sub.unsubscribe());
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   movieForm = this.#fb.group(
@@ -101,6 +108,8 @@ export class MovieDetailComponent {
     };
     if (this.#isNewMovie()) {
       this.store.dispatch(addMovie(modifiedMovie));
+    } else {
+      this.store.dispatch(updateMovie(modifiedMovie));
     }
 
     this.#changesSaved = true;
