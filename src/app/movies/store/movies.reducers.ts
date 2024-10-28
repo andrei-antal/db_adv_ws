@@ -15,6 +15,7 @@ import {
   EntityAdapter,
   EntityState,
 } from '@ngrx/entity';
+import { getRouterSelectors } from '@ngrx/router-store';
 
 const adapter: EntityAdapter<Movie> = createEntityAdapter<Movie>();
 
@@ -86,8 +87,12 @@ export const getAllEntities = createSelector<
   Dictionary<Movie>
 >(getMoviesFeatureState, getMovieEntities);
 
-export const getMovieById = (props: { movieId: string }) =>
-  createSelector(
-    getAllEntities,
-    (movies: Dictionary<Movie>) => movies[props.movieId]
-  );
+export const { selectRouteParams } = getRouterSelectors();
+
+export const getMovieById = createSelector(
+  getAllEntities,
+  selectRouteParams,
+  (movies, { id }) => movies[id]
+);
+
+export const getIsNewMovie = createSelector(getMovieById, (movie) => !movie);

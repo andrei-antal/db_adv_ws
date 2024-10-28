@@ -13,6 +13,7 @@ import { moviesListReducer } from './movies/store/movies.reducers';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideEffects } from '@ngrx/effects';
 import * as MoviesEffects from './movies/store/movies.effects';
+import { provideRouterStore, routerReducer } from '@ngrx/router-store';
 
 const routes: Route[] = [
   { path: '', component: HomeComponent },
@@ -28,8 +29,9 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(withInterceptors([authInterceptor])),
     provideRouter(routes, withComponentInputBinding()),
-    provideStore({ moviesFeature: moviesListReducer }),
+    provideStore({ moviesFeature: moviesListReducer, router: routerReducer }),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideEffects(MoviesEffects),
+    provideRouterStore(),
   ],
 };

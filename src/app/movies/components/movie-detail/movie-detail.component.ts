@@ -25,7 +25,11 @@ import {
 } from '../../services/movies.validators';
 import { GENRES } from '../../model/movie-data';
 import { GenreControlComponent } from '../genre-control/genre-control.component';
-import { getMovieById, MovieState } from '../../store/movies.reducers';
+import {
+  getIsNewMovie,
+  getMovieById,
+  MovieState,
+} from '../../store/movies.reducers';
 import { select, Store } from '@ngrx/store';
 import { addMovie, updateMovie } from '../../store/movies.actions';
 
@@ -52,24 +56,16 @@ export class MovieDetailComponent {
 
   id = input<string>('');
 
-  #movie = signal<Movie>(EMPTY_MOVIE);
-  #isNewMovie = computed(() => !this.id());
+  #movie = this.store.selectSignal(getMovieById);
+  #isNewMovie = this.store.selectSignal(getIsNewMovie);
   #changesSaved = false;
 
   constructor() {
     effect(
-      (onCleanup) => {
-        const id = this.id();
-        if (id) {
-          const sub = this.store
-            .pipe(select(getMovieById({ movieId: id })))
-            .subscribe((movie) => {
-              if (movie) {
-                this.movieForm.patchValue(movie);
-                this.#movie.set(movie);
-              }
-            });
-          onCleanup(() => sub.unsubscribe());
+      () => {
+        const movie = this.#movie();
+        if (movie) {
+          this.movieForm.patchValue(movie);
         }
       },
       { allowSignalWrites: true }
@@ -103,7 +99,7 @@ export class MovieDetailComponent {
   onSubmit(): void {
     const { value } = this.movieForm;
     const modifiedMovie: Movie = {
-      ...this.#movie(),
+      ...this.#movie()!,
       ...value,
     };
     if (this.#isNewMovie()) {
